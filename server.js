@@ -29,9 +29,22 @@ app.all('/*', function (req, res, next) {
 
 //조회
 app.get('/test', (req, res) => {
-	connection.query('select * from test.member', (err, rows) => {
+	connection.query('select * from test.test', (err, rows) => {
 		if (!err) {
-			res.send(rows);
+			var json = new Object()
+
+			var json = { "status" : "ok",
+						 "totalResults" : rows.length,
+						 "articles" :rows
+					    }
+			console.log(rows);
+			
+			res.send(json);
+			console.log(json);
+			
+			// console.log(users);
+			
+			
 		} else {
 			console.log(err);
 		}
@@ -40,7 +53,7 @@ app.get('/test', (req, res) => {
 
 //상세보기
 app.get('/test/:id', (req, res) => {
-	connection.query('select * from test.member where id = ?', [req.params.id], (err, rows) => {
+	connection.query('select * from test.test where id = ?', [req.params.id], (err, rows) => {
 		if (!err) {
 			res.send(rows);
 		} else {
@@ -52,7 +65,7 @@ app.get('/test/:id', (req, res) => {
 //생성
 app.post('/testing', (req, res) => {
 	let getparams = req.body;
-	var sql = "insert into test.member value(?,?,?)"
+	var sql = "insert into test.test value(?,?,?)"
 	connection.query(sql, [getparams.userid, getparams.name, getparams.address], (err, rows) => {
 		if (!err) {
 			res.send("insert success")
@@ -63,7 +76,7 @@ app.post('/testing', (req, res) => {
 })
 //put 갱신? update
 app.put('/testUpdate', (req, res) => {
-	var sql = "update test.member set id = ?, name = ?, address = ? where id = ?"
+	var sql = "update test.test set id = ?, name = ?, address = ? where id = ?"
 	connection.query(sql, [req.body.userid, req.body.name, req.body.address, req.body.id], (err, rows) => {
 		if (!err) {
 			res.send("update(put) success");
@@ -75,7 +88,7 @@ app.put('/testUpdate', (req, res) => {
 
 //delete
 app.delete('/testdelete/:id', (req, res) => {
-	var sql = "delete from test.member where id = ?"
+	var sql = "delete from test.test where id = ?"
 	connection.query(sql, [req.params.id], (err, rows) => {
 		if (!err) {
 			res.send("delete success");

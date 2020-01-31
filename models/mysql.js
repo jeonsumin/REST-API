@@ -8,8 +8,9 @@ var connection = mysql.createConnection({
 	port: 3306,
 	user: 'id',
 	password: 'password',
-	database: 'database',
-	multipleStatements: true
+	database: 'DB-Name',
+	multipleStatements: true,
+	insecureAuth: true
 })
 
 
