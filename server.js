@@ -7,59 +7,67 @@ var bodyParser = require('body-parser');
 var connection = require('./models/mysql');
 
 //Connect
-connection.connect(function(err) {
+connection.connect(function (err) {
 	if (err) {
 		console.error('mysql conneciton errer');
 		console.error(err);
 		throw err;
-	}else{
+	} else {
 		console.log('dbconnection success~');
 	}
 })
 
 app.use(bodyParser.json());
 
+//cors 허용
+app.all('/*', function (req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	next();
+});
+
+
 //조회
-app.get('/test', (req,res) => {
-	connection.query('select * from users', (err, rows)=>{
-		if(!err){
+app.get('/test', (req, res) => {
+	connection.query('select * from test.member', (err, rows) => {
+		if (!err) {
 			res.send(rows);
-		}else{
+		} else {
 			console.log(err);
 		}
 	})
 })
 
 //상세보기
-app.get('/test/:id', (req,res)=> {
-	connection.query('select * from users where userid = ?',[req.params.id], (err, rows) => {
-		if(!err){
+app.get('/test/:id', (req, res) => {
+	connection.query('select * from test.member where id = ?', [req.params.id], (err, rows) => {
+		if (!err) {
 			res.send(rows);
-		}else{
+		} else {
 			console.log(err);
 		}
 	})
 })
 
 //생성
-app.post('/testing',(req, res) => {
+app.post('/testing', (req, res) => {
 	let getparams = req.body;
-	var sql = "insert into users value(?,?,?)"
-	connection.query(sql,[getparams.userid, getparams.name, getparams.address], (err, rows) => {
-		if(!err){
+	var sql = "insert into test.member value(?,?,?)"
+	connection.query(sql, [getparams.userid, getparams.name, getparams.address], (err, rows) => {
+		if (!err) {
 			res.send("insert success")
-		}else{
+		} else {
 			console.log(err);
 		}
 	})
 })
 //put 갱신? update
 app.put('/testUpdate', (req, res) => {
-	var sql = "update users set userid = ?, name = ?, address = ? where userid = ?"
-	connection.query(sql, [req.body.userid, req.body.name, req.body.address, req.body.id], (err,rows) => {
-		if(!err){
+	var sql = "update test.member set id = ?, name = ?, address = ? where id = ?"
+	connection.query(sql, [req.body.userid, req.body.name, req.body.address, req.body.id], (err, rows) => {
+		if (!err) {
 			res.send("update(put) success");
-		}else{
+		} else {
 			console.log(err);
 		}
 	})
@@ -67,22 +75,22 @@ app.put('/testUpdate', (req, res) => {
 
 //delete
 app.delete('/testdelete/:id', (req, res) => {
-	var sql = "delete from users where userid = ?"
+	var sql = "delete from test.member where id = ?"
 	connection.query(sql, [req.params.id], (err, rows) => {
-		if(!err){
+		if (!err) {
 			res.send("delete success");
-		}else{
+		} else {
 			console.log(err);
 		}
 	})
 })
 
 //server
-app.listen(3000, function(err){
-	if(!err){
+app.listen(3000, function (err) {
+	if (!err) {
 		console.log("Express server running at port no : 3000");
-	}else{
-			console.log("Port not running : " + err);
+	} else {
+		console.log("Port not running : " + err);
 	}
 
 })
